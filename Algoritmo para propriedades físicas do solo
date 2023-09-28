@@ -1,0 +1,93 @@
+propriedade=input("Nome da propriedade onde foi coletado o solo:")
+data_da_coleta=str(input("Digite a data da coleta de solo:"))
+entrada=input("Este algoritmo foi criado para automatizar a Análise Física do Solo a partir de dados coletados em {}. Quem é o resposável por essa Análise? (nome) ".format(propriedade))
+print('Como você sabe, {}, para o algoritmo funcionar corretamente precisa-se de algumas informações inciais. A seguir você precisará preencher informações como diâmetro, altura e peso do anel volumétrico que você usou para coleta indeformada do solo.'. format(entrada))
+diametro=float(input('Digite o Diâmetro do Anel em cm:'))
+altura=float(input('Digite a altura do anel em cm:'))
+
+vt=((diametro**2)/4)*altura*3.1415 #volume do anel#
+
+print('O volume total de solo:{: .2f}cm³'.format(vt))
+pesoumido=float(input('Digite o valor do peso Úmido em gramas + anel (Solo na situação em que foi coletado em campo):'))
+psat=float(input('Digite o valor do peso saturado em gramas + anel (Deixe o solo sobre a água até que forme uma lâmina de água na superfície do solo por capilaridade):'))
+pesoseco=float(input('Digite o valor do peso do solo seco em gramas + anel (Utilize uma estufa de circulação de ar forçado à 105°C até que o peso do solo permaneça constante):'))
+pesoanel=float(input('Para as próximos resultados é necessário conhecer o peso do anel para ser descontado nos cálculos. Digite o peso do anel em gramas:'))
+
+vagua=(pesoumido-pesoseco) #volume de agua#
+vporos=psat-pesoseco
+var=vporos-vagua#volume do ar#
+vsolidos=vt-vporos
+um=((pesoumido-pesoseco)/(pesoseco-pesoanel))*100 #umidade a base de massa#
+uv=((vagua)/vt)*100 #umidade a base de volume#
+densidadesolo=(pesoseco-pesoanel)/vt
+#condicional densidade do solo 1 até 1,6g/cm³ solo compactado
+if (densidadesolo >=0.20  and densidadesolo <=0.40):
+  print("A partir da densidade. Pode ser que seja um solo organossolo.")
+if (densidadesolo >=0.75  and densidadesolo <1):
+  print("A partir da densidade. Pode ser que seja um solo humífero.")
+if densidadesolo >=1 and densidadesolo <=1.25: 
+  print("A partir da densidade. Pode ser que seja um solo argiloso.")
+if densidadesolo >=1.6 and densidadesolo <=1.7: 
+  print("A partir da densidade. Caso seu solo seja classificado como argiloso pode não apresentar raízes nessas condições de densidade.")
+if densidadesolo >=1.9:
+    print("Qualquer solo acima de 1,9 g/cm³ pode não apresentar raízes nessas condições de densidade.")
+else:
+  print("Verificar os dados de densidade. Intervalo incompatível.")
+porosidadetotal=(vporos/vt)*100 #porosidade total#
+porosidadear=(var/vt)*100 #porosidade de aeração#
+porcentagemdesolidos=((vsolidos)/(vt))*100 #Porcentagem de sólidos#
+
+print("A Seguir serão computados todos os parâmetros físicos do solo a partir dos dados fornecidos. OBS: Verificar se os dados foram preenchidos corretamente.")
+
+print('O volume da água:{: 23.2f}cm³'.format(vagua))
+
+print('Volume de ar:{: .2f}cm³'.format(var))
+
+print('Volume dos sólidos:{: .2f}cm³'.format(vsolidos))
+
+print('Umidade a base de massa:{: .2f}%'.format(um))
+
+print('Densidade do solo:{: .2f}g/cm3'.format(densidadesolo))
+
+print('Porosidade total do solo:{: .2f}%'.format(porosidadetotal))
+
+print("Porcentagem de SÓLIDO:{: .2f}%".format(porcentagemdesolidos))
+print('Porcentagem de ÁGUA/Umidade a base de volume:{: .2f}%'.format(uv))
+print('Porcentagem de AR/Porosidade de aeração:{: .2f}%'.format(porosidadear))
+
+print("Fig. 1")
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+#define data
+data = [uv, porosidadear, porcentagemdesolidos]
+labels = ['Água', 'Ar', 'Sólido']
+
+#define Seaborn color palette to use
+colors = sns.color_palette('pastel')[0:5]
+
+#create pie chart
+plt.pie(data, labels = labels, colors = colors, autopct='%.0f%%')
+plt.show()
+
+pesodeaguaadicionada=pesoseco*0.25
+
+quanto_falta_ar=25-porosidadear
+quanto_falta_agua=25-uv
+
+if(uv==25):
+  print("Esse solo está com uma condição ideal de água!")
+elif (uv > 0 and uv <25 ):
+  print("Pelo gráfico, o valor deu {: .2f}% de água ocupando o volume de {: .2f} cm³. Nas condições ideais de solo a porcentagem de água presente é de 25%, como a porcentagem foi abaixo, faltando {: .2f}% para atingir o ideal, para chegar nessa situação nesse solo deve-se adicionar {: .2f} de água em gramas. ".format(uv, vagua, quanto_falta_agua, pesodeaguaadicionada))
+elif (uv>25):
+  print("Os canais vazios estão mais saturados que o ideal.")
+
+if (porosidadear<25):
+  print("Pelo gráfico o valor deu {: .2f}% de ar ocupando o volume de {: .2f} cm³. Nas condições ideais de solo a porcentagem de ar presente é de 25%. Precisa-se aumentar {: .2f}% para atingir o ideal, uma forma é garantir a atividade biológica nesse solo.".format(porosidadear, var, quanto_falta_ar))
+elif (porosidadear==25):
+  print("Esse solo está com uma condição ideal de ar!")
+elif (porosidadear>25):
+  print("Esse solo está com uma condição de ar fora do ideal.")
+
+
+print("MEMORIAL DESCRITIVO: O projeto deu início em {}, na propriedade {} realizado por {}. Utilizou o anel volumétrico com as seguintes dimensões: {: .2f} cm de diâmetro e {: .2f} cm de altura, e com isso o volume total do solo foi {: .2f} cm³. Pesou o anel e conferiu {: .2f} em gramas, pesou o solo úmido com o anel e conferiu {: .2f} em gramas, saturou o solo com anel e conferiu {: .2f} em gramas, transportou para a estufa até peso constante e constantou o peso seco com anel de {: .2f} em gramas. E partir disso obteve os seguintes resultados de propriedades físicas do solo: No sistema trifásico alcançou {: .2f}% de água, {: .2f}% de ar e {: .2f}% de sólidos (conforme o gráfico acima na Fig. 1), sendo o solo ideal 25% de água, 25% de ar e 50% de sólidos. A quantidade de água presente foi exatamente {: .2f} gramas, os espaços vazios foi de {: .2f} cm³, nesse mesmo espaço o volume preenchido por água foi de {: .2f} cm³ e de ar foi {: .2f} cm³. Enquanto o volume restante de sólidos foi {: .2f} cm³. A densidade do solo constatada foi de {: .2f} g/cm³, em porcentagens teve-se {: .2f}%, {: .2f}%, {: .2f}%, para porosidade total, porosidade de aeração e porcentagem de sólidos respectivamente.  ".format(data_da_coleta, propriedade, entrada, diametro, altura, vt, pesoanel, pesoumido, psat, pesoseco, uv, porosidadear, porcentagemdesolidos, vagua, vporos, vagua, var, vsolidos, densidadesolo, porosidadetotal, porosidadear, porcentagemdesolidos))
