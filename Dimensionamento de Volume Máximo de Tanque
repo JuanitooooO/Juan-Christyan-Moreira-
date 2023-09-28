@@ -1,0 +1,56 @@
+print ("Cálculos para dimensionamento do Volume do Tanque ou das suas variáveis.")
+def calcular_volume_tanque():
+    variavel = input("Digite a variável que deseja encontrar ('L' para Largura de trabalho em metros, 'b' para Comprimento da faixa a ser trabalhada em metros, 'Q' para Vazão máxima em Litros por Hora ou Litros por Minuto, ou 'T' para Volume do Tanque em Litros): ").lower()
+
+    if variavel == 'l':
+        b = float(input("Largura de trabalho em metros: "))
+        Q = float(input("Vazão máxima da ponta (em Litros por Minuto ou Litros por Hora, não precisa fazer conversões): "))
+        Q_unidade = input("Unidade da vazão (M para Minutos, H para Horas): ").lower()
+        T = float(input("Volume do tanque em Litros: "))
+
+        if Q_unidade == 'h':
+            Q = Q / 60  # Conversão de Litros por Hora para Litros por Minuto
+
+        L = (T * 5000) / (b * Q)
+        print("Comprimento da faixa a ser trabalhada em metros:", L, "m")
+
+    elif variavel == 'b':
+        L = float(input("Comprimento da faixa a ser trabalhada em metros: "))
+        Q = float(input("Vazão máxima da ponta em Litros por Minuto ou Litros por Hora: "))
+        Q_unidade = input("Unidade da vazão (M para Minutos, H para Horas): ").lower()
+        T = float(input("Volume do tanque em Litros: "))
+
+        if Q_unidade == 'h':
+            Q = Q / 60  # Conversão de Litros por Hora para Litros por Minuto
+
+        b = (T * 5000) / (L * Q)
+        print("Largura de trabalho em metros:", b, "m")
+
+    elif variavel == 'q':
+        L = float(input("Comprimento da faixa a ser trabalhada em metros: "))
+        b = float(input("Largura de trabalho em metros: "))
+        T = float(input("Volume do tanque em Litros: "))
+        Q_unidade = input("Unidade da vazão (M para Minutos, H para Horas): ").lower()
+        Q = float(input("Vazão máxima da ponta: "))
+
+        if Q_unidade == 'h':
+            Q = Q / 60  # Conversão de Litros por Hora para Litros por Minuto
+
+        print("Vazão máxima da ponta:", Q, "Litros por Minuto")
+
+    elif variavel == 't':
+        L = float(input("Comprimento da faixa a ser trabalhada em metros: "))
+        b = float(input("Largura de trabalho em metros: "))
+        Q = float(input("Vazão máxima da ponta em Litros por Minuto ou Litros por Hora: "))
+        Q_unidade = input("Unidade da vazão (M para Litros/Minutos, Litros/H para Horas): ").lower()
+
+        if Q_unidade == 'h':
+            Q = Q / 60  # Conversão de Litros por Hora para Litros por Minuto
+
+        T = (L * b * Q) / 5000
+        print("Volume do tanque em Litros:", T, "L")
+
+    else:
+        print("Opção inválida.")
+
+calcular_volume_tanque()
